@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Price Prediction</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: url('https://images.unsplash.com/photo-1471479917193-f00955256257?q=80&w=1931&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: rgba(236, 240, 241, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            max-width: 90%;
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+        h1 {
+            text-align: center;
+            color: #E74C3C;
+            margin-bottom: 10px;
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #2C3E50;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        input, select {
+            width: 100%;
+            padding: 6px;
+            margin-bottom: 8px;
+            border: 1px solid #BDC3C7;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 12px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #E74C3C;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #C0392B;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .prediction-result {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 16px;
+            color: #2C3E50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Car Price Prediction</h1>
+        <form action="/predict" method="post">
+            <div class="form-group">
+                <label for="year">Year</label>
+                <select id="year" name="year" required>
+                    <option value="">Select Year</option>
+                    <option value="1983">1983</option>
+                    <option value="1988">1988</option>
+                    <option value="1990">1990</option>
+                    <option value="1995">1995</option>
+                    <option value="1998">1998</option>
+                    <option value="1999">1999</option>
+                    <option value="2000">2000</option>
+                    <option value="2002">2002</option>
+                    <option value="2003">2003</option>
+                    <option value="2004">2004</option>
+                    <option value="2005">2005</option>
+                    <option value="2006">2006</option>
+                    <option value="2007">2007</option>
+                    <option value="2008">2008</option>
+                    <option value="2009">2009</option>
+                    <option value="2010">2010</option>
+                    <option value="2011">2011</option>
+                    <option value="2012">2012</option>
+                    <option value="2013">2013</option>
+                    <option value="2014">2014</option>
+                    <option value="2015">2015</option>
+                    <option value="2016">2016</option>
+                    <option value="2017">2017</option>
+                    <option value="2018">2018</option>
+                    <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="manufacturer">Manufacturer</label>
+                <select id="manufacturer" name="manufacturer" onchange="updateModels()" required>
+                    <option value="">Select Manufacturer</option>
+                    <option value="Alfa Romeo">אלפא רומיאו</option>
+                    <option value="Audi">אאודי</option>
+                    <option value="Chevrolet">שברולט</option>
+                    <option value="Chrysler">קרייזלר</option>
+                    <option value="Citroen">סיטרואן</option>
+                    <option value="Daihatsu">דייהטסו</option>
+                    <option value="Ford">פורד</option>
+                    <option value="Honda">הונדה</option>
+                    <option value="Hyundai">יונדאי</option>
+                    <option value="Kia">קיה</option>
+                    <option value="Lexus">לקסוס</option>
+                    <option value="Mazda">מאזדה</option>
+                    <option value="Mercedes">מרצדס</option>
+                    <option value="Mini">מיני</option>
+                    <option value="Mitsubishi">מיצובישי</option>
+                    <option value="Nissan">ניסאן</option>
+                    <option value="Opel">אופל</option>
+                    <option value="Peugeot">פיג'ו</option>
+                    <option value="Renault">רנו</option>
+                    <option value="Skoda">סקודה</option>
+                    <option value="Subaru">סובארו</option>
+                    <option value="Suzuki">סוזוקי</option>
+                    <option value="Toyota">טויוטה</option>
+                    <option value="Volkswagen">פולקסווגן</option>
+                    <option value="Volvo">וולוו</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="model">Model</label>
+                <select id="model" name="model" required>
+                    <option value="">Select Model</option>
+                    <!-- Models will be populated based on the selected manufacturer -->
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="hand">Hand</label>
+                <select id="hand" name="hand" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="gear">Gear</label>
+                <select id="gear" name="gear" required>
+                    <option value="">Select Gear</option>
+                    <option value="Automatic">אוטומטית</option>
+                    <option value="Tiptronic">טיפטרוניק</option>
+                    <option value="Manual">ידנית</option>
+                    <option value="Robot">רובוטית</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="capacity_Engine">Capacity engine</label>
+                <select id="capacity_Engine" name="capacity_Engine" required>
+                    <option value="">Select Capacity engine</option>
+                    <option value="800">800</option>
+                    <option value="900">900</option>
+                    <option value="998">998</option>
+                    <option value="1000">1000</option>
+                    <option value="1100">1100</option>
+                    <option value="1193">1193</option>
+                    <option value="1197">1197</option>
+                    <option value="1198">1198</option>
+                    <option value="1199">1199</option>
+                    <option value="1200">1200</option>
+                    <option value="1240">1240</option>
+                    <option value="1242">1242</option>
+                    <option value="1248">1248</option>
+                    <option value="1250">1250</option>
+                    <option value="1280">1280</option>
+                    <option value="1290">1290</option>
+                    <option value="1298">1298</option>
+                    <option value="1300">1300</option>
+                    <option value="1318">1318</option>
+                    <option value="1339">1339</option>
+                    <option value="1364">1364</option>
+                    <option value="1368">1368</option>
+                    <option value="1374">1374</option>
+                    <option value="1376">1376</option>
+                    <option value="1390">1390</option>
+                    <option value="1395">1395</option>
+                    <option value="1396">1396</option>
+                    <option value="1399">1399</option>
+                    <option value="1400">1400</option>
+                    <option value="1450">1450</option>
+                    <option value="1459">1459</option>
+                    <option value="1461">1461</option>
+                    <option value="1468">1468</option>
+                    <option value="1470">1470</option>
+                    <option value="1490">1490</option>
+                    <option value="1495">1495</option>
+                    <option value="1496">1496</option>
+                    <option value="1498">1498</option>
+                    <option value="1500">1500</option>
+                    <option value="1568">1568</option>
+                    <option value="1580">1580</option>
+                    <option value="1586">1586</option>
+                    <option value="1590">1590</option>
+                    <option value="1591">1591</option>
+                    <option value="1595">1595</option>
+                    <option value="1598">1598</option>
+                    <option value="1599">1599</option>
+                    <option value="1600">1600</option>
+                    <option value="1700">1700</option>
+                    <option value="1798">1798</option>
+                    <option value="1799">1799</option>
+                    <option value="1800">1800</option>
+                    <option value="1900">1900</option>
+                    <option value="1968">1968</option>
+                    <option value="1984">1984</option>
+                    <option value="1997">1997</option>
+                    <option value="1998">1998</option>
+                    <option value="1999">1999</option>
+                    <option value="2000">2000</option>
+                    <option value="2143">2143</option>
+                    <option value="2200">2200</option>
+                    <option value="2359">2359</option>
+                    <option value="2400">2400</option>
+                    <option value="2500">2500</option>
+                    <option value="2700">2700</option>
+                    <option value="2800">2800</option>
+                    <option value="2900">2900</option>
+                    <option value="2998">2998</option>
+                    <option value="3000">3000</option>
+                    <option value="3200">3200</option>
+                    <option value="3300">3300</option>
+                    <option value="3471">3471</option>
+                    <option value="3500">3500</option>
+                    <option value="3510">3510</option>
+                    <option value="3600">3600</option>
+                    <option value="3750">3750</option>
+                    <option value="3800">3800</option>
+                    <option value="3990">3990</option>
+                    <option value="4000">4000</option>
+                    <option value="4200">4200</option>
+                    <option value="4500">4500</option>
+                    <option value="5500">5500</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="km">Kilometers</label>
+                <input type="number" id="km" name="km" min="0" placeholder="Enter kilometers" required>
+            </div>
+
+            <div class="form-group">
+                <label for="engine_type">Engine Type</label>
+                <select id="engine_type" name="engine_type" required>
+                    <option value="">Select Engine Type</option>
+                    <option value="בנזין">בנזין</option>
+                    <option value="דיזל">דיזל</option>
+                    <option value="אחר">אחר</option>
+                    <option value="היברידי">היברידי</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="color">Color</label>
+                <select id="color" name="color" required>
+                    <option value="">Select Color</option>
+                    <option value="Beige">בז'</option>
+                    <option value="Black">שחור</option>
+                    <option value="Blue">כחול</option>
+                    <option value="Brown">חום</option>
+                    <option value="Champagne">שמפניה</option>
+                    <option value="Gray">אפור</option>
+                    <option value="Green">ירוק</option>
+                    <option value="Ivory White">לבן שנהב</option>
+                    <option value="Metallic Blue">כחול מטאלי</option>
+                    <option value="Metallic Bronze">ברונזה</option>
+                    <option value="Metallic Gold">זהב מטאלי</option>
+                    <option value="Metallic Gray">אפור מטאלי</option>
+                    <option value="Metallic Purple">סגול מטאלי</option>
+                    <option value="Metallic Red">אדום מטאלי</option>
+                    <option value="Metallic Silver">כסוף מטאלי</option>
+                    <option value="Metallic White">לבן מטאלי</option>
+                    <option value="Orange">כתום</option>
+                    <option value="Pearl White">לבן פנינה</option>
+                    <option value="Pink">ורוד</option>
+                    <option value="Red">אדום</option>
+                    <option value="Silver">כסוף</option>
+                    <option value="Turquoise">טורקיז</option>
+                    <option value="White">לבן</option>
+                </select>
+            </div>
+
+            <button type="submit">Predict Price</button>
+        </form>
+        
+        <!-- מקום להצגת התחזית -->
+        {% if prediction %}
+        <div class="prediction-result">
+            <h2>{{ prediction }}</h2>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        const models = {
+            "Audi": ["A1", "A3", "A4", "A5"],
+            "Alfa Romeo": ["Giulia", "Mito", "Stelvio"],
+            "Chrysler": ["300C", "Pacifica", "Voyager"],
+            "Chevrolet": ["Camaro", "Impala", "Malibu"],
+            "Citroen": ["C3", "C4", "C5"],
+            "Daihatsu": ["Charade", "Terios"],
+            "Ford": ["Focus", "Mustang"],
+            "Honda": ["Civic", "Accord", "CR-V"],
+            "Hyundai": ["i10", "i20", "i30", "Elantra"],
+            "Kia": ["Picanto", "Rio", "Sportage"],
+            "Lexus": ["CT", "IS", "RX"],
+            "Mazda": ["2", "3", "6"],
+            "Mercedes": ["A-Class", "C-Class", "E-Class"],
+            "Mini": ["Cooper", "Countryman"],
+            "Mitsubishi": ["ASX", "Outlander"],
+            "Nissan": ["Micra", "Qashqai"],
+            "Opel": ["Astra", "Corsa"],
+            "Peugeot": ["208", "308"],
+            "Renault": ["Clio", "Megane"],
+            "Skoda": ["Fabia", "Octavia"],
+            "Subaru": ["Impreza", "Outback"],
+            "Suzuki": ["Swift", "Vitara"],
+            "Toyota": ["Auris", "Corolla", "Yaris"],
+            "Volkswagen": ["Golf", "Polo"],
+            "Volvo": ["S60", "V40"]
+        };
+
+        function updateModels() {
+            const manufacturerSelect = document.getElementById("manufacturer");
+            const modelSelect = document.getElementById("model");
+            const selectedManufacturer = manufacturerSelect.value;
+
+            modelSelect.innerHTML = '<option value="">Select Model</option>';
+
+            if (models[selectedManufacturer]) {
+                models[selectedManufacturer].forEach(model => {
+                    const option = document.createElement("option");
+                    option.value = model;
+                    option.text = model;
+                    modelSelect.appendChild(option);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
